@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plates - Uttam Enterprise</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* logo left, nav right */
+  padding: 15px 20px;
+  background: var(--secondary);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Logo */
+.header-container .logo img {
+  height: 60px; /* adjust as needed */
+  border-radius: 8px;
+}
+
+/* Navbar */
+nav {
+  display: flex;
+  gap: 20px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Hover effects */
+nav a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  left: 50%;
+  bottom: 0;
+  background: var(--accent);
+  transition: width 0.3s ease, left 0.3s ease;
+}
+
+nav a:hover::after {
+  width: 80%;
+  left: 10%;
+}
+
+nav a:hover {
+  background: var(--dark);
+  transform: translateY(-3px);
+}
+
+/* Responsive for smaller screens */
+@media screen and (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    gap: 10px;
+  }
+  nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+}
+  </style>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <div class="logo">
+      <img src="https://tse2.mm.bing.net/th/id/OIP.QXiEUfsiCpNhqKbpTDi22wHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Uttam Enterprise Logo">
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="product.html">Products</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <div class="cart-container">
+        <a href="#" class="cart-toggle">🛒 Cart: <span id="cart-count">0</span></a>
+        <div class="cart-dropdown">
+          <ul id="cart-items">
+            <!-- Items will appear here -->
+          </ul>
+          <p id="cart-total">Total: ₹0</p>
+        </div>
+      </div>
+
+</header>
+
+  <section class="products">
+    <div class="product-card">
+      <img src="https://th.bing.com/th/id/OIP.ejynAC5AC2Ca9ug_GsjVKgHaFR?w=296&h=211&c=7&r=0&o=7&cb=12&dpr=1.5&pid=1.7&rm=3" alt="Paper Plate">
+      <h3>Paper Plate</h3>
+      <p>₹120 / 50 pcs</p>
+      <button class="add-to-cart" data-name="Paper Cup" data-price="50">Add to Cart</button>
+
+    </div>
+    <div class="product-card">
+      <img src="https://th.bing.com/th/id/OIP.9G1KKKhFITs3EetrUYoXawHaHa?w=197&h=197&c=7&r=0&o=7&cb=12&dpr=1.5&pid=1.7&rm=3" alt="Plastic Plate">
+      <h3>Plastic Plate</h3>
+      <p>₹150 / 50 pcs</p>
+      <button class="add-to-cart" data-name="Paper Cup" data-price="50">Add to Cart</button>
+
+    </div>
+    <div class="product-card">
+      <img src="https://th.bing.com/th/id/OIP.dQDIxQbm3fHX2PGWLRph3gHaHa?w=180&h=180&c=7&r=0&o=7&cb=12&dpr=1.5&pid=1.7&rm=3" alt="Partition Plate">
+      <h3>Partition Plate</h3>
+      <p>₹180 / 25 pcs</p>
+      <button class="add-to-cart" data-name="Paper Cup" data-price="50">Add to Cart</button>
+
+    </div>
+  </section>
+  <script>
+let cart = [];
+
+const buttons = document.querySelectorAll('.add-to-cart');
+const cartCount = document.getElementById('cart-count');
+const cartItems = document.getElementById('cart-items');
+const cartTotal = document.getElementById('cart-total');
+const cartContainer = document.querySelector('.cart-container');
+const cartToggle = document.querySelector('.cart-toggle');
+
+// Toggle dropdown
+cartToggle.addEventListener('click', (e) => {
+  e.preventDefault();
+  cartContainer.classList.toggle('active');
+});
+
+// Add to cart
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const name = btn.getAttribute('data-name');
+    const price = parseInt(btn.getAttribute('data-price'));
+
+    const existing = cart.find(item => item.name === name);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({name, price, quantity: 1});
+    }
+
+    updateCart();
+  });
+});
+
+// Remove item
+function removeItem(name) {
+  cart = cart.filter(item => item.name !== name);
+  updateCart();
+}
+
+// Update cart display
+function updateCart() {
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  cartCount.innerText = totalItems;
+
+  cartItems.innerHTML = '';
+  let totalPrice = 0;
+  cart.forEach(item => {
+    totalPrice += item.price * item.quantity;
+    const li = document.createElement('li');
+    li.innerHTML = `
+      ${item.name} x${item.quantity} - ₹${item.price * item.quantity} 
+      <span class="remove-item" onclick="removeItem('${item.name}')">x</span>
+    `;
+    cartItems.appendChild(li);
+  });
+
+  cartTotal.innerText = `Total: ₹${totalPrice}`;
+}
+</script>
+
+
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Uttam Enterprise</h3>
+        <p>Your trusted shop for quality disposable products — cups, plates, spoons & more at wholesale prices.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">🏠 Home</a></li>
+          <li><a href="product.html">🛒 Products</a></li>
+          <li><a href="about.html">ℹ️ About</a></li>
+          <li><a href="contact.html">📞 Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Us</h3>
+        <p>📍 Near Main Market, Your City</p>
+        <p>📞 +91 9876543210</p>
+        <p>✉️ uttamenterprise@email.com</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Uttam Enterprise | Designed with ❤️</p>
+    </div>
+  </footer>
+</body>
+</html>

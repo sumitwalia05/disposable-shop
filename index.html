@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uttam Enterprise - Home</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Header Container */
+
+/* Intro Section after header */
+.intro-section {
+  background: #f0f0f0; /* light gray background for contrast */
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.intro-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.intro-section h2 {
+  font-size: 2em;
+  color: var(--secondary);
+  margin-bottom: 20px;
+}
+
+.intro-section p {
+  font-size: 1.1em;
+  color: var(--dark);
+  line-height: 1.6;
+}
+
+
+  </style>
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <div class="logo">
+      <img src="https://tse2.mm.bing.net/th/id/OIP.QXiEUfsiCpNhqKbpTDi22wHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Uttam Enterprise Logo">
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="product.html">Products</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <div class="cart-container">
+        <a href="#" class="cart-toggle">🛒 Cart: <span id="cart-count">0</span></a>
+        <div class="cart-dropdown">
+          <ul id="cart-items">
+            <!-- Items will appear here -->
+          </ul>
+          <p id="cart-total">Total: ₹0</p>
+        </div>
+      </div>
+
+</header>
+<section class="intro-section">
+  <div class="intro-container">
+    <h2> Uttam Enterprise</h2>
+    <p>
+      Uttam Enterprise is your trusted supplier of high-quality disposable products.
+      We provide a wide range of items including cups, plates, spoons, and more
+      at wholesale prices. Our goal is to make your events and businesses hassle-free
+      with reliable, durable, and eco-friendly disposable solutions.
+    </p>
+  </div>
+</section>
+<script>
+let cart = [];
+
+const buttons = document.querySelectorAll('.add-to-cart');
+const cartCount = document.getElementById('cart-count');
+const cartItems = document.getElementById('cart-items');
+const cartTotal = document.getElementById('cart-total');
+const cartContainer = document.querySelector('.cart-container');
+const cartToggle = document.querySelector('.cart-toggle');
+
+// Toggle dropdown
+cartToggle.addEventListener('click', (e) => {
+  e.preventDefault();
+  cartContainer.classList.toggle('active');
+});
+
+// Add to cart
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const name = btn.getAttribute('data-name');
+    const price = parseInt(btn.getAttribute('data-price'));
+
+    const existing = cart.find(item => item.name === name);
+    if (existing) {
+      existing.quantity += 1;
+    } else {
+      cart.push({name, price, quantity: 1});
+    }
+
+    updateCart();
+  });
+});
+
+// Remove item
+function removeItem(name) {
+  cart = cart.filter(item => item.name !== name);
+  updateCart();
+}
+
+// Update cart display
+function updateCart() {
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  cartCount.innerText = totalItems;
+
+  cartItems.innerHTML = '';
+  let totalPrice = 0;
+  cart.forEach(item => {
+    totalPrice += item.price * item.quantity;
+    const li = document.createElement('li');
+    li.innerHTML = `
+      ${item.name} x${item.quantity} - ₹${item.price * item.quantity} 
+      <span class="remove-item" onclick="removeItem('${item.name}')">x</span>
+    `;
+    cartItems.appendChild(li);
+  });
+
+  cartTotal.innerText = `Total: ₹${totalPrice}`;
+}
+</script>
+
+
+
+
+
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-section">
+        <h3>Uttam Enterprise</h3>
+        <p>Your trusted shop for quality disposable products — cups, plates, spoons & more at wholesale prices.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">🏠 Home</a></li>
+          <li><a href="product.html">🛒 Products</a></li>
+          <li><a href="about.html">ℹ️ About</a></li>
+          <li><a href="contact.html">📞 Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Contact Us</h3>
+        <p>📍 Near Main Market, Your City</p>
+        <p>📞 +91 9876543210</p>
+        <p>✉️ uttamenterprise@email.com</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Uttam Enterprise | Designed with ❤️</p>
+    </div>
+  </footer>
+</body>
+</html>
